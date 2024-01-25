@@ -101,7 +101,9 @@ Check the status of the mosquitto service:
 ### 2. Install MediamTX
 Download to your Raspberry PI:
 
-```wget https://github.com/bluenviron/mediamtx/releases/download/v1.4.2/mediamtx_v1.4.2_linux_arm64v8.tar.gz```
+```
+wget https://github.com/bluenviron/mediamtx/releases/download/v1.4.2/mediamtx_v1.4.2_linux_arm64v8.tar.gz
+```
 
 Extract the downloaded file:
 
