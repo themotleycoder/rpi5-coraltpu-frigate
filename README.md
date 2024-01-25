@@ -12,17 +12,22 @@ Experiment to setup Coral AI PCIe Accelerator on a Raspberry PI 5 and run Frigat
 
 Use this shortcut file provided by [DataSlayerMedia](https://www.youtube.com/@DataSlayerMedia) to get all the requried depencies downloaded and installed.
 
-```Curl https://gist.githubusercontent.com/dataslayermedia/714ec5a9601249d9ee754919dea49c7e/raw/11bbda5da9c9539281e9e77215e3cbc9d698a5e3/coral-ai-pcie-edge-tpu-raspberrypi-5-setup | sh```
+```
+Curl https://gist.githubusercontent.com/dataslayermedia/714ec5a9601249d9ee754919dea49c7e/raw/11bbda5da9c9539281e9e77215e3cbc9d698a5e3/coral-ai-pcie-edge-tpu-raspberrypi-5-setup | sh
+```
 
-Test thatyour pi can see the coral device
+Test that your pi can see the coral device:
 
 ```ls /dev/apex_0```
 
 Install Docker:
+
 ```sudo apt update```
+
 ```sudo apt install docker.io```
 
-Check docker is working
+Check docker is working:
+
 ```sudo docker ps -a```
 
 Create a Dockerfile:
@@ -41,16 +46,19 @@ RUN apt-get install -y edgetpu-examples
 ```
 
 Build Docker container:
+
 ```sudo docker build -t "coral" .```
 
-
 Run Docker container:
+
 ```sudo docker run -it —device /dev/apex_0:/dev/apex_0 coral /bin/bash```
 
 In the container command prompt run the following to test that everything is working:
+
 ```python3 /usr/share/edgetpu/examples/classify_image.py --model /usr/share/edgetpu/examples/models/mobilenet_v2_1.0_224_inat_bird_quant_edgetpu.tflite --label /usr/share/edgetpu/examples/models/inat_bird_labels.txt --image /usr/share/edgetpu/examples/images/bird.bmp```
 
 It will identify a bird image from the examples directory the output should something like...
+
 ```
 ---------------------------
 Poecile atricapillus (Black-capped Chickadee)
@@ -68,43 +76,55 @@ This takes 3 steps
 Install MQTT (Mosquitto)
 Getting Started Guide: https://www.howtoforge.com/how-to-install-mosquitto-mqtt-messagebroker-
 on-debian-11/
+
 ```sudo apt install mosquitto mosquitto-clients```
 
-Edit the MQTT config file.
+Edit the MQTT config file:
+
 ```nano /etc/mosquitto/mosquitto.conf```
 
-Add these two lines at the top of the config file
+Add these two lines at the top of the config file:
+
 ```
 allow_anonymous true
 listener 1883
 ```
 
-Save & restart the service.
+Save & restart the service:
+
 ```systemctl restart mosquitto```
-Check the status of the mosquitto service
+
+Check the status of the mosquitto service:
+
 ```sudo systemctl status mosquitto```
 
 ### 2. Install MediamTX
-Download to your Raspberry PI
+Download to your Raspberry PI:
+
 ```wget https://github.com/bluenviron/mediamtx/releases/download/v1.4.2/mediamtx_v1.4.2_linux_arm64v8.tar.gz```
 
-Extract the downloaded file
+Extract the downloaded file:
+
 ```tar -xzvf mediamtx_v1.4.2_linux_arm64v8.tar.gz```
 
-Run the server by passing your IP address and an open port (554, in my case)
+Run the server by passing your IP address and an open port (554, in my case):
+
 ```RTSP_RTSPADDRESS=192.XXX.X.XXX:554 ./mediamtx```
 
 It will now be listening for an FFMEG stream
 
-Use FFMPEG to stream a feed to the RTSP server
-```sudo ffmpeg -f v4l2 -input_format mjpeg -video_size 1280x720 -framerate 30 -i /dev/video0  -f rtsp -rtsp_transport tcp rtsp://192.X.X.X:554/mystream```
+Use FFMPEG to stream a feed to the RTSP server:
+
+```
+sudo ffmpeg -f v4l2 -input_format mjpeg -video_size 1280x720 -framerate 30 -i /dev/video0  -f rtsp -rtsp_transport tcp rtsp://192.X.X.X:554/mystream
+```
 
 It should now be sending the stream to the listener
 
 ### 3. Install Frigate (in Docker)
 Now we need to setup Frigate to leverage the created camera stream
 
-Create a directory off of root called “frigate”. Add a config.yml file (see `config.yml` in this repo)
+Create a directory off of root called “frigate”. Add a config.yml file (see `config.yml` in this repo):
 
 ```
 cd /
@@ -112,7 +132,7 @@ mkdir frigate
 cd /frigate
 ```
 
-Paste the provide YAML file and now edit it
+Paste the provide YAML file and now edit it:
 
 ```sudo nano config.yml```
 
